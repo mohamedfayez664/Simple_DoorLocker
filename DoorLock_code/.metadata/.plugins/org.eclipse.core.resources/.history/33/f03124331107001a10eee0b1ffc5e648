@@ -1,0 +1,33 @@
+#include "internal_eeprom.h"
+
+void IN_EEPROM_write_byte(uint16 addr ,uint8 data )
+{
+	while(BIT_IS_SET(EECR,EEWE));//
+
+	EEAR = addr;
+	EEDR = data;
+	EECR  = (1 << EEMWE);   //EECR=0;
+	SET_BIT(EECR,EEWE);
+}
+
+uint8 IN_EEPROM_read_byte(uint16 addr )
+{
+	while(BIT_IS_SET(EECR,EEWE));
+
+	EEAR = addr;
+	EECR = 1 << EERE;  //EECR=0;
+
+	return EEDR;
+}
+void IN_EEPROM_write(uint16 addr ,uint8 *data ,uint8 data_size )
+{
+	while(data_size !=  0)
+	{
+		IN_EEPROM_write(v_eepromAddress_u16,*ptr_ramAddress_u8); //Write a byte from RAM to EEPROM
+		v_eepromAddress_u16++;					   //Increment the Eeprom Address
+		ptr_ramAddress_u8++;						   //Increment the RAM Address
+		v_numOfBytes_u16--;					   //Decrement NoOfBytes after writing each Byte
+	}
+
+}
+}

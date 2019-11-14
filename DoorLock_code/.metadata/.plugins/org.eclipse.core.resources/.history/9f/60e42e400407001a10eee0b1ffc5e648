@@ -1,0 +1,24 @@
+#include "internal_eeprom.h"
+
+void IN_EEPROM_write(uint16 addr ,uint8 data )
+{
+	while(BIT_IS_SET(EECR,EEWE));////
+	while(BIT_IS_SET( SPMCR ,SPMEN ));  //new
+	EEAR = addr;
+
+	EEDR = data;
+	EECR  = (1 << EEMWE);
+	SET_BIT(EECR,EEWE);
+}
+
+uint8 IN_EEPROM_read(uint16 addr )
+{
+	while(BIT_IS_SET(EECR,EEWE));
+
+	EEAR = addr;
+	//EECR=0;
+	EECR = 1 << EERE;
+	//SET_BIT(EECR,EERE);
+
+	return EEDR;
+}

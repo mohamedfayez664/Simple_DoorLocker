@@ -1,0 +1,17 @@
+/*
+ * eeprom.h
+ *
+ * Created: 4/22/2017 3:02:41 AM
+ *  Author: safifi
+ */ 
+#ifndef IN_EEPROM_H_
+#define IN_EEPROM_H_
+
+#include "std_types.h"
+#include "std_macros.h"
+#include "std_micro_comp_conf.h"
+void eeprom_write(uint8 data,uint16 addr );
+uint8  eeprom_read(uint16 addr );
+
+
+#endif

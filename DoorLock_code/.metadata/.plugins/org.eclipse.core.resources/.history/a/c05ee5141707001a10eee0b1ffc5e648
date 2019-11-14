@@ -1,0 +1,37 @@
+#include "switches.h"
+#include "lcd.h"
+#include "interrupt.h"
+#include "keypad.h"
+
+volatile uint8 memory_pass[5]= {1,1,1,1,1};
+uint8  input_pass[5] = {0};
+volatile uint8 switch1_press, switch2_press ,g_flag=0 ,count;
+
+void switch_init()
+{
+	sei();
+
+	if(IN_EEPROM_ReadByte (0)!=1){
+
+	}
+	IN_EEPROM_WriteBytes (0X0A, memory_pass, 5);
+//	IN_EEPROM_ReadBytes  (0X0A, j , 2);
+
+	INTERRUPT_Config interrupt0 ={FALLING_EDGE ,PULL_UP };
+	INT0_CallBack(callBackint);
+	INT0_Init(&interrupt0) ;     //run in falling edge
+
+}
+
+void callBackint(void){
+	LCD_clearScreen();
+	LCD_displayString("enter new Pass :");
+	LCD_goToRowColumn(2 , 1);
+
+	for (count=0 ; count < 5 ; count ++){
+		memory_pass[count]= KeyPad_getPressedKey();
+		LCD_displayCharacter(memory_pass[count]+48);
+		DELAY_ms(400);
+	}
+	IN_EEPROM_WriteBytes (0X0A, memory_pass, 5);
+}
